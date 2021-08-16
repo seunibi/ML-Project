@@ -340,7 +340,7 @@ quantile(sim1[,n_days]- initial_wealth, prob=0.05)
 
 The second portfolio consists of: Vanguard Intermediate-Term Treasury ETF (VGIT), Vanguard Total World Stock Index Fund ETF(VT), Vanguard Health Care ETF (VHT) and Vanguard S&P Small-Cap 600 Growth Index Fund ETF (VIOG). The VGIT ETF invests primarily in U.S Treasury bonds and has a risk ratio of 2; VT invests in both US and foreign stocks and has a risk potential of 4; VHT tracks the performance of benchmark index that measures investment return of stocks in the healthcare sector and has a risk value of 5; and VIOG  invests in stocks in of growth companies in the S&P 600. The portfolio is comprised of 10% of VGIT, 20% of VT, 30% of VHT and 40% of VIOG. This portfolio would be considered diverse as each ETF holds assets in a different category class, however, one could argue that since they are all Vanguard ETF's, the investing strategy's might be similar. Additionally, a bond ETF was added as they are considered to be one of the less risky investments and I wanted to see how it would affect the portfolio. 
 
-We see through the simulation graph that the total wealth over this 4 week period could be as high as ~125,177 dollars but as low as under ~81,746 dollars. Given the high range, I would conclude that this is also a relatively risky portfolio for it to possibly fluctuate this much over a 20 day period, even with the bond ETF. The average wealth of the portfolio was computed to be 101,053.26 dollars which indicates an average gain of 1053.26 dollars. The value at risk at the 5% level was found to be 7045.96 dollars. This means that under normal conditions, there is a 5% chance that the portfolio could loose 7138.48 dollars over the 4 week period. 
+We see through the simulation graph that the total wealth over this 4 week period could be as high as ~125,177 dollars but as low as under ~81,746 dollars. Given the high range, I would conclude that this is also a relatively risky portfolio for it to possibly fluctuate this much over a 20 day period, even with the bond ETF. The average wealth of the portfolio was computed to be 101,053.26 dollars which indicates an average gain of 1053.26 dollars. The value at risk at the 5% level was found to be 7138.48 dollars. This means that under normal conditions, there is a 5% chance that the portfolio could loose 7138.48 dollars over the 4 week period. 
 
 ```{r, ECHO=FALSE, include=FALSE}
 #Pull in the ETF's from online 
@@ -508,7 +508,7 @@ By looking at the correlation plot alone, NutrientH20 could take each of the cor
 
 ```{r, echo = FALSE}
 rm(list=ls())
-setwd("~/Desktop/Intro to Machine Learning /Part 2")
+setwd("~/Desktop/ML-Project")
 tweets= read.csv("social_marketing.csv",header=TRUE, row.names=1)
 attach(tweets)
 ```
@@ -661,13 +661,14 @@ library(randomForest)
 ```
 
 
-```{r, echo=T,message=FALSE, warning=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 
 # Reader plain text
 readerPlain = function(fname){
 				readPlain(elem=list(content=readLines(fname)), 
 							id=fname, language='en') }
 # Load data
+setwd("~/Desktop/ML-Project")
 dirstrain <- list.dirs("C50train", full.names = T)
 dirstest <- list.dirs("C50test", full.names = T)
 # remove the first element in the list, making it to be 50 elements
@@ -679,7 +680,7 @@ dirstest <- dirstest[-1]
 
 Let's deal with training set first. We rolled all 2500 directories from 50 authors in 'C50train' together into a single corpus. Then we cleaned of punctuation, excessive white-space and common English language words. This pre-processing process facilitates the relevant terms to surface for text mining that would help build classification model.
 
-```{r, echo=T,message=FALSE, warning=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Rolling directories together into a single corpus
 file_list = Sys.glob(paste0(dirstrain,'/*.txt'))
 # a more clever regex to get better file names
@@ -707,7 +708,7 @@ my_documents = documents_raw %>%
 
 We then created a document term matrix of the corpus. The raw results indicated that our training corpus had 2500 documents an 32570 terms. In our case, the sparsity index of 99% indicated that 99% of our DTM entries are zeros.
 
-```{r, echo=T,message=FALSE, warning=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Create a doc-term-matrix from the corpus
 DTMtrain = DocumentTermMatrix(my_documents)
 # DTM's summary statistics
@@ -716,7 +717,7 @@ DTMtrain  # XX% sparsity means XX% of the entries are zero
 
 We could see that the noise of the "long tail"(rare terms) was actually huge. We could not learn much on those terms occurred once. As a result, we removed those terms that have count 0 in 95% of documents. The new results showed that now we only had 801 terms in the corpus and the sparsity is 86%.
 
-```{r, echo=T,message=FALSE, warning=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Removes those terms that have count 0 in >95% of docs.  
 DTMtrain = removeSparseTerms(DTMtrain, 0.95)
 DTMtrain
@@ -724,7 +725,7 @@ DTMtrain
 
 Let's try to inspect the terms that appear in at least 250 documents:
 
-```{r, echo=T,message=FALSE, warning=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 findFreqTerms(DTMtrain, 250)
 ```
 
@@ -732,7 +733,7 @@ findFreqTerms(DTMtrain, 250)
 
 We did the same pre-processing process and create a document term matrix for our test corpus.
 
-```{r, echo=T,message=FALSE, warning=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 file_list_test = Sys.glob(paste0(dirstest,'/*.txt'))
 data_test = lapply(file_list_test, readerPlain) 
 mynames_test = file_list_test %>%
@@ -758,7 +759,7 @@ my_documents_test = documents_test %>%
 
 We could find out that our test corpus had 2500 documents an 33373 terms. The sparsity is 99%.
 
-```{r, echo=T,message=FALSE, warning=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 ## create a doc-term-matrix from the corpus
 DTMtest = DocumentTermMatrix(my_documents_test)
 DTMtest
@@ -766,14 +767,14 @@ DTMtest
 
 After removing those therms that have count 0 in 95% of the documents, we got 816 terms and sparsity at 86% for our test corpus.
 
-```{r, echo=T,message=FALSE, warning=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 DTMtest = removeSparseTerms(DTMtest, 0.95)
 DTMtest
 ```
 
 There was new words in the test data that we never saw in the training set. We decided to ignore these new terms in the test data and aligned the terms in the training data with those in the test data. Now we could see that we had 743 common words in training and test.
 
-```{r, echo=T,message=FALSE, warning=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Covert from matrix to DataFrame
 traindata <- data.frame( as.matrix( DTMtrain ), label = labelstrain)
 traindata$label <- factor(traindata$label)
@@ -827,7 +828,7 @@ Our random forest model helped us achieve 60.68% accuracy. As a result, we can c
 library(arules)
 library(arulesViz)
 library(tidyverse)
-setwd("~/Desktop/Intro to Machine Learning /Part 2")
+setwd("~/Desktop/ML-Project")
 groceries = read.transactions("groceries.txt", sep = ",")
 ```
 
